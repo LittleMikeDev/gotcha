@@ -9,10 +9,17 @@ Note: this is still a WIP, and therefore the API may change.
 
 ## Usage
 
+Get a method
+
+```
+Method method1 = Methods.get(MyClass.class, MyClass::noArgsMethod);
+Method method2 = Methods.get(MyClass.class, c -> c.methodWithArgs(arg1, arg2));
+```
+
 Capture a method invocation with arguments.
 
 ```
-Invocation invocation = InvocationCaptor.capture(MyClass.class, c -> c.someMethod(argument1, argument2));
+Invocation invocation = InvocationCaptor.capture(MyClass.class, c -> c.someMethod(arg1, arg2));
 Method method = invocation.getMethod();
 Object[] arguments = invocation.getArguments();
 ```
@@ -22,6 +29,9 @@ Capture last invocation on proxy (similar to mocking frameworks)
 ```
 InvocationCaptor captor = InvocationCaptor.forClass(MyClass.class);
 MyClass proxy = captor.getProxy();
+
+// Could be called elsewhere
 proxy.doSomething(1, 2);
+
 Optional<Invocation> invocation = captor.getLastInvocation();
 ```

@@ -1,6 +1,9 @@
 package uk.co.littlemike.gotcha;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +17,15 @@ public class InvocationCaptorTest {
             throw new IllegalStateException(String.format(
                     "Methods should never actually be invoked! Invoked with arguments %s, %s", argument1, argument2));
         }
+    }
+
+    private static Method METHOD;
+    private static Method NOARGS;
+
+    @BeforeClass
+    public static void setConstants() throws NoSuchMethodException {
+        METHOD = ProxiedClass.class.getMethod("method", String.class, int.class);
+        NOARGS = ProxiedClass.class.getMethod("noArgs");
     }
 
     @Test
@@ -36,10 +48,8 @@ public class InvocationCaptorTest {
 
         // Then
         Invocation invocation = captor.getLastInvocation().get();
-        assertThat(invocation.getMethod())
-                .isEqualTo(ProxiedClass.class.getMethod("noArgs"));
-        assertThat(invocation.getArguments())
-                .isEmpty();
+        assertThat(invocation.getMethod()).isEqualTo(NOARGS);
+        assertThat(invocation.getArguments()).isEmpty();
     }
 
     @Test
@@ -55,10 +65,8 @@ public class InvocationCaptorTest {
 
         // Then
         Invocation invocation = captor.getLastInvocation().get();
-        assertThat(invocation.getMethod())
-                .isEqualTo(ProxiedClass.class.getMethod("method", String.class, int.class));
-        assertThat(invocation.getArguments())
-                .containsExactly(argument1, argument2);
+        assertThat(invocation.getMethod()).isEqualTo(METHOD);
+        assertThat(invocation.getArguments()).containsExactly(argument1, argument2);
     }
 
     @Test
@@ -69,15 +77,19 @@ public class InvocationCaptorTest {
         Invocation invocation = InvocationCaptor.capture(ProxiedClass.class, p -> p.method(argument1, argument2));
 
         // Then
-        assertThat(invocation.getMethod())
-                .isEqualTo(ProxiedClass.class.getMethod("method", String.class, int.class));
-        assertThat(invocation.getArguments())
-                .containsExactly(argument1, argument2);
+        assertThat(invocation.getMethod()).isEqualTo(METHOD);
+        assertThat(invocation.getArguments()).containsExactly(argument1, argument2);
     }
 
     @Test(expected = NoInvocationException.class)
     public void throwsExceptionIfAttemptingToCaptureInvocationThatNeverHappened() {
         InvocationCaptor.capture(ProxiedClass.class, p -> {
         });
+    }
+
+    @Test
+    public void canGetMethods() {
+        assertThat(Methods.get(ProxiedClass.class, ProxiedClass::noArgs)).isEqualTo(NOARGS);
+        assertThat(Methods.get(ProxiedClass.class, c -> c.method("", 0))).isEqualTo(METHOD);
     }
 }

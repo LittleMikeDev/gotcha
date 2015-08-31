@@ -10,15 +10,15 @@ import java.util.function.Consumer;
 
 public class InvocationCaptor<T> {
     private class InvocationHandler implements MethodInterceptor {
+
         @Override
         public Object intercept(Object o, Method method, Object[] arguments, MethodProxy methodProxy) throws Throwable {
             return lastInvocation = Optional.of(new Invocation(method, arguments));
         }
-
     }
+
     private final T proxy;
     private Optional<Invocation> lastInvocation = Optional.empty();
-
     @SuppressWarnings("unchecked")
     public InvocationCaptor(Class<T> proxiedClass) {
         Enhancer enhancer = new Enhancer();
@@ -45,4 +45,5 @@ public class InvocationCaptor<T> {
         return captor.getLastInvocation()
                 .orElseThrow(() -> new NoInvocationException(proxiedClass));
     }
+
 }

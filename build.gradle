@@ -6,7 +6,7 @@ plugins {
 
 defaultTasks 'build', 'jacocoTestReport', 'publishToMavenLocal'
 
-version = 0.1
+version = '0.1'
 sourceCompatibility = 1.8
 
 basicPublishing {

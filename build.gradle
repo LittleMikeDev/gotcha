@@ -1,11 +1,17 @@
-defaultTasks 'build', 'jacocoTestReport'
+plugins {
+    id "uk.co.littlemike.publishing-smorgasbord-plugin" version "0.5"
+    id "java"
+    id "jacoco"
+}
 
-apply plugin: 'java'
-apply plugin: "jacoco"
+defaultTasks 'build', 'jacocoTestReport', 'publishToMavenLocal'
 
-version = 1.0
-//noinspection GroovyUnusedAssignment
+version = 0.1
 sourceCompatibility = 1.8
+
+basicPublishing {
+    organisation = 'uk.co.littlemike'
+}
 
 repositories {
     jcenter()

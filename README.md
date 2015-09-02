@@ -1,5 +1,6 @@
 # Gotcha
 
+[ ![Download](https://api.bintray.com/packages/littlemikedev/maven/gotcha/images/download.svg) ](https://bintray.com/littlemikedev/maven/gotcha/_latestVersion)
 [![Build Status](https://travis-ci.org/LittleMikeDev/gotcha.svg)](https://travis-ci.org/LittleMikeDev/gotcha)
 [![codecov.io](http://codecov.io/github/LittleMikeDev/gotcha/coverage.svg?branch=master)](http://codecov.io/github/LittleMikeDev/gotcha?branch=master)
 

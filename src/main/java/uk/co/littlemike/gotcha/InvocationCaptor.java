@@ -17,10 +17,13 @@ public class InvocationCaptor<T> {
         }
     }
 
+    private final Class<T> proxiedClass;
     private final T proxy;
     private Optional<Invocation> lastInvocation = Optional.empty();
+
     @SuppressWarnings("unchecked")
     public InvocationCaptor(Class<T> proxiedClass) {
+        this.proxiedClass = proxiedClass;
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(proxiedClass);
         enhancer.setCallback(new InvocationHandler());
@@ -39,11 +42,13 @@ public class InvocationCaptor<T> {
         return lastInvocation;
     }
 
-    public static <T> Invocation capture(Class<T> proxiedClass, Consumer<T> consumer) {
-        InvocationCaptor<T> captor = InvocationCaptor.forClass(proxiedClass);
-        consumer.accept(captor.getProxy());
-        return captor.getLastInvocation()
+    public Invocation capture(Consumer<T> invocation) {
+        invocation.accept(proxy);
+        return getLastInvocation()
                 .orElseThrow(() -> new NoInvocationException(proxiedClass));
     }
 
+    public static <T> Invocation capture(Class<T> proxiedClass, Consumer<T> invocation) {
+        return InvocationCaptor.forClass(proxiedClass).capture(invocation);
+    }
 }

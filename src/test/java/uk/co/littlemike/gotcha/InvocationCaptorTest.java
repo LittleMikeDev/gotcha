@@ -71,9 +71,11 @@ public class InvocationCaptorTest {
 
     @Test
     public void capturesArgumentsFromGivenLambda() throws NoSuchMethodException {
-        // When
+        // Given
         String argument1 = "Arg1";
         int argument2 = 2;
+
+        // When
         Invocation invocation = InvocationCaptor.capture(ProxiedClass.class, p -> p.method(argument1, argument2));
 
         // Then
@@ -88,7 +90,17 @@ public class InvocationCaptorTest {
     }
 
     @Test
-    public void canGetMethods() {
+    public void canCaptureMultipleInvocationsForCaptor() {
+        // Given
+        InvocationCaptor<ProxiedClass> captor = InvocationCaptor.forClass(ProxiedClass.class);
+
+        // Then
+        assertThat(captor.capture(ProxiedClass::noArgs).getMethod()).isEqualTo(NOARGS);
+        assertThat(captor.capture(c -> c.method("", 1)).getMethod()).isEqualTo(METHOD);
+    }
+
+    @Test
+    public void canGetMethodsDirectly() {
         assertThat(Methods.get(ProxiedClass.class, ProxiedClass::noArgs)).isEqualTo(NOARGS);
         assertThat(Methods.get(ProxiedClass.class, c -> c.method("", 0))).isEqualTo(METHOD);
     }

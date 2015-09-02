@@ -24,6 +24,14 @@ Method method = invocation.getMethod();
 Object[] arguments = invocation.getArguments();
 ```
 
+Capture multiple invocations using a single captor
+
+```
+InvocationCaptor<MyClass> captor = InvocationCaptor.forClass(MyClass.class);
+Invocation invocation1 = captor.capture(MyClass:noArgsMethod);
+Invocation invocation2 = captor.capture(c -> c.someMethod(arg1, arg2));
+```
+
 Capture last invocation on proxy (similar to mocking frameworks)
 
 ```
